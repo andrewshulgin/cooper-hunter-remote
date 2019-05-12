@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cooper & Hunter Remote</title>
+</head>
+<body>
+<form>
+    <label>power <input name="power" type="checkbox"></label>
+    <br>
+    <label>mode <select name="mode">
+        <option>auto</option>
+        <option>cool</option>
+        <option>dry</option>
+        <option>fan</option>
+        <option>heat</option>
+    </select></label>
+    <br>
+    <label>temp <input name="temp" type="number" min="16" max="30" value="20"></label>
+    <br>
+    <label>fan <select name="fan">
+        <option>auto</option>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+    </select></label>
+    <br>
+    <label>turbo <input name="turbo" type="checkbox"></label>
+    <br>
+    <label>xfan <input name="xfan" type="checkbox"></label>
+    <br>
+    <label>light <input name="light" type="checkbox"></label>
+    <br>
+    <label>sleep <input name="sleep" type="checkbox"></label>
+    <br>
+    <label>swing_auto <input name="swing_auto" type="checkbox"></label>
+    <br>
+    <label>swing <select name="swing">
+        <option>last</option>
+        <option>auto</option>
+        <option>up</option>
+        <option>middle_up</option>
+        <option>middle</option>
+        <option>middle_down</option>
+        <option>middle_down</option>
+        <option>down_auto</option>
+        <option>middle_auto</option>
+        <option>up_auto</option>
+    </select></label>
+    <br>
+    <button type="submit">send</button>
+</form>
+<script>
+    (function () {
+        var ws = null;
+        var form = document.getElementsByTagName('form')[0];
+        form.onsubmit = function (event) {
+            event.preventDefault();
+            ws.send(JSON.stringify({
+                'power': document.getElementsByName('power')[0].checked,
+                'mode': document.getElementsByName('mode')[0].value,
+                'temp': parseInt(document.getElementsByName('temp')[0].value),
+                'fan': document.getElementsByName('fan')[0].value,
+                'turbo': document.getElementsByName('turbo')[0].checked,
+                'light': document.getElementsByName('light')[0].checked,
+                'sleep': document.getElementsByName('sleep')[0].checked,
+                'swing_auto': document.getElementsByName('swing_auto')[0].checked,
+                'swing': document.getElementsByName('swing')[0].value
+            }));
+        };
+
+        function onMessage(message) {
+            var data = JSON.parse(message.data);
+            document.getElementsByName('power')[0].checked = data.power === true;
+            document.getElementsByName('mode')[0].value = data.mode;
+            document.getElementsByName('temp')[0].value = data.temp;
+            document.getElementsByName('fan')[0].value = data.fan;
+            document.getElementsByName('turbo')[0].checked = data.turbo === true;
+            document.getElementsByName('light')[0].checked = data.light === true;
+            document.getElementsByName('sleep')[0].checked = data.sleep === true;
+            document.getElementsByName('swing_auto')[0].checked = data.swing_auto === true;
+            document.getElementsByName('swing')[0].value = data.swing;
+        }
+
+        function connect() {
+            ws = new WebSocket('ws://127.0.0.1:8080/ws');
+            ws.onmessage = onMessage;
+        }
+
+        connect();
+        setInterval(function () {
+            if (ws.readyState !== WebSocket.OPEN) {
+                console.warn('ws: reconnecting', ws.readyState);
+                if (ws && ws.readyState !== WebSocket.CLOSED)
+                    ws.close();
+                connect();
+            }
+        }, 5000);
+    })();
+</script>
+</body>
+</html>

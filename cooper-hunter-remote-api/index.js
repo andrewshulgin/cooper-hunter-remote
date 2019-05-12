@@ -58,6 +58,8 @@ class CooperHunterEsp8266Client {
     }
 
     connect() {
+        if (!this.client)
+            return;
         this.client.connect(this.port, this.address, () => {
             this.connected = true;
         });
