@@ -1,0 +1,16 @@
+.idea/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+lib-cov
+coverage
+node_modules/
+.npm
+.node_repl_history
+*.tgz
+.env
+.env.test
+.cache

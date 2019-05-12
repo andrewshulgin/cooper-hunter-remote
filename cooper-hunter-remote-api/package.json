@@ -1,0 +1,9 @@
+{
+  "name": "cooper-hunter-remote-api",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "argparse": "^1.0.10",
+    "ws": "^7.0.0"
+  }
+}
