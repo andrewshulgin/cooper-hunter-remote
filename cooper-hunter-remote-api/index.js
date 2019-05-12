@@ -71,8 +71,9 @@ class CooperHunterEsp8266Client {
         });
     }
 
-    close() {
-        this.client.close();
+    close(callback) {
+        this.client.end(callback);
+        this.client.destroy();
     }
 
     setParameters(parameters) {
