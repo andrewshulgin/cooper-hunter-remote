@@ -29,6 +29,7 @@ Gree gree(kPin);
 decode_results results;
 AsyncUDP udp;
 AsyncServer* server = new AsyncServer(kPort);
+char last_state[24];
 static std::vector<AsyncClient*> clients;
 
 bool parseStateMessage(char *data)
@@ -93,13 +94,16 @@ static void handleNewClient(void* arg, AsyncClient* client) {
 	client->onError(&handleError, NULL);
 	client->onDisconnect(&handleDisconnect, NULL);
 	client->onTimeout(&handleTimeOut, NULL);
+    if (client->space() > 32 && client->canSend()) {
+        client->add(last_state, strlen(last_state));
+        client->send();
+    }
 }
 
 void broadcastStateMessage(Gree ac)
 {
-    char description[24];
     sprintf(
-        description,
+        last_state,
         "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n",
         ac.getPower(),
         ac.getMode(),
@@ -111,14 +115,14 @@ void broadcastStateMessage(Gree ac)
         ac.getSleep(),
         ac.getSwingVerticalAuto(),
         ac.getSwingVerticalPosition());
-    Serial.print(description);
+    Serial.print(last_state);
     for (size_t i = 0; i < clients.size(); i++) {
         if (clients[i]->space() > 32 && clients[i]->canSend()) {
-            clients[i]->add(description, strlen(description));
+            clients[i]->add(last_state, strlen(last_state));
             clients[i]->send();
         }
 	}
-    udp.broadcastTo(description, kPort);
+    udp.broadcastTo(last_state, kPort);
 }
 
 void setup()
