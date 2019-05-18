@@ -134,6 +134,10 @@ void setup()
     EEPROM.begin(24);
 
     EEPROM.get(0, last_state);
+    if (parseStateMessage((char*) last_state))
+        send_command = true;
+    else
+        sprintf(last_state, "0,0,16,0,0,0,1,0,1,1\r\n");
 
 #if DECODE_HASH
     irrecv.setUnknownThreshold(kMinUnknownSize);
