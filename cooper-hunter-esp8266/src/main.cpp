@@ -8,6 +8,7 @@
 #include <IRrecv.h>
 #include <IRutils.h>
 #include <EEPROM.h>
+#include <Ticker.h>
 #include <credentials.h>
 #include <gree.h>
 
@@ -30,6 +31,7 @@ Gree gree(kPin);
 decode_results results;
 AsyncUDP udp;
 AsyncServer* server = new AsyncServer(kPort);
+Ticker ticker;
 char last_state[24];
 static std::vector<AsyncClient*> clients;
 
@@ -101,8 +103,7 @@ static void handleNewClient(void* arg, AsyncClient* client) {
     }
 }
 
-void broadcastStateMessage(Gree ac)
-{
+void updateLastState(Gree ac) {
     sprintf(
         last_state,
         "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n",
@@ -116,9 +117,13 @@ void broadcastStateMessage(Gree ac)
         ac.getSleep(),
         ac.getSwingVerticalAuto(),
         ac.getSwingVerticalPosition());
-    Serial.print(last_state);
     EEPROM.put(0, last_state);
     EEPROM.commit();
+}
+
+void broadcastLastState()
+{
+    Serial.print(last_state);
     for (size_t i = 0; i < clients.size(); i++) {
         if (clients[i]->space() > 32 && clients[i]->canSend()) {
             clients[i]->add(last_state, strlen(last_state));
@@ -189,6 +194,7 @@ void setup()
         }
     });
     ArduinoOTA.begin();
+    ticker.attach(1, broadcastLastState);
     server->onClient(&handleNewClient, server);
     server->begin();
 }
@@ -204,7 +210,8 @@ void loop()
         delay(20);
         gree.begin();
         gree.send();
-        broadcastStateMessage(gree);
+        updateLastState(gree);
+        broadcastLastState();
         delay(20);
         digitalWrite(kPin, LOW);
         pinMode(kPin, INPUT_PULLUP);
@@ -220,7 +227,8 @@ void loop()
         {
             Gree ac(0);
             ac.setRaw(results.state);
-            broadcastStateMessage(ac);
+            updateLastState(ac);
+            broadcastLastState();
         }
         yield();
     }

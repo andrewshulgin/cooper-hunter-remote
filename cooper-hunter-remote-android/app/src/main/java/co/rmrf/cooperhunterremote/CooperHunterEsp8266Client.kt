@@ -47,6 +47,7 @@ class CooperHunterEsp8266Client(
     private var running: Boolean = false
     private var reader: BufferedReader? = null
     private var writer: BufferedWriter? = null
+    private var lastMessage: String? = null
 
     fun send(data: CooperHunterDataPacket) {
         if (!running)
@@ -75,12 +76,17 @@ class CooperHunterEsp8266Client(
         running = true
         try {
             socket = Socket()
+            socket!!.soTimeout = 2000
             socket!!.connect(InetSocketAddress(address, port), 1000)
             writer = BufferedWriter(OutputStreamWriter(socket!!.getOutputStream()))
             reader = BufferedReader(InputStreamReader(socket!!.getInputStream()))
             listener?.connected()
             while (running && reader != null) {
-                deserialize(reader!!.readLine())?.let { listener?.dataReceived(it) }
+                val message = reader!!.readLine()
+                if (message != lastMessage) {
+                    deserialize(message)?.let { listener?.dataReceived(it) }
+                    lastMessage = message
+                }
             }
         } catch (e: SocketException) {
             reconnect()
