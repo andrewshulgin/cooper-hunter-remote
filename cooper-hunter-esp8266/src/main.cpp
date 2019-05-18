@@ -7,6 +7,7 @@
 #include <IRremoteESP8266.h>
 #include <IRrecv.h>
 #include <IRutils.h>
+#include <EEPROM.h>
 #include <credentials.h>
 #include <gree.h>
 
@@ -116,6 +117,8 @@ void broadcastStateMessage(Gree ac)
         ac.getSwingVerticalAuto(),
         ac.getSwingVerticalPosition());
     Serial.print(last_state);
+    EEPROM.put(0, last_state);
+    EEPROM.commit();
     for (size_t i = 0; i < clients.size(); i++) {
         if (clients[i]->space() > 32 && clients[i]->canSend()) {
             clients[i]->add(last_state, strlen(last_state));
@@ -128,6 +131,9 @@ void broadcastStateMessage(Gree ac)
 void setup()
 {
     Serial.begin(kBaud);
+    EEPROM.begin(24);
+
+    EEPROM.get(0, last_state);
 
 #if DECODE_HASH
     irrecv.setUnknownThreshold(kMinUnknownSize);
