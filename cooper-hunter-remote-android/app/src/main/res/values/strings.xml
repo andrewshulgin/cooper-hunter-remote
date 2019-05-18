@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Cooper &amp; Hunter Remote</string>
+    <string name="power">Power</string>
+    <string name="auto">Auto</string>
+    <string name="cool">Cool</string>
+    <string name="dry">Dry</string>
+    <string name="fan">Fan</string>
+    <string name="heat">Heat</string>
+    <string name="turbo">Turbo</string>
+    <string name="xfan">XFan</string>
+    <string name="light">Light</string>
+    <string name="sleep">Sleep</string>
+    <string name="send">Send</string>
+
+    <string-array name="swing_modes">
+        <item>Last</item>
+        <item>Auto</item>
+        <item>Up</item>
+        <item>Middle Up</item>
+        <item>Middle</item>
+        <item>Middle Down</item>
+        <item>Down</item>
+        <item>Down Auto</item>
+        <item>Middle Auto</item>
+        <item>Up Auto</item>
+    </string-array>
+</resources>
