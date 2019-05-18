@@ -14,10 +14,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ToggleButton
+        <Switch
             android:id="@+id/powerSwitch"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/power"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -27,6 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:padding="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/powerSwitch">
@@ -37,7 +40,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:descendantFocusability="blocksDescendants"
-                android:theme="@style/NumberPicker"/>
+                android:dividerPadding="8dp"
+                android:theme="@style/NumberPicker" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5" />
 
             <RadioGroup
                 android:id="@+id/modeGroup"
@@ -45,6 +54,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:checkedButton="@id/modeAuto"
+                android:dividerPadding="8dp"
                 android:orientation="vertical">
 
                 <RadioButton
@@ -101,6 +111,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:padding="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fanMode">
@@ -139,6 +150,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:padding="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/optionsGroup">
@@ -162,6 +174,7 @@
             android:id="@+id/sendButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="16dp"
             android:text="@string/send"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
